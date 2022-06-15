@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.ia_computerscience;
 
 import org.junit.Test;
 
