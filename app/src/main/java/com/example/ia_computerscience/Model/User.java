@@ -1,5 +1,6 @@
 package com.example.ia_computerscience.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -13,14 +14,14 @@ public class User {
         name = null;
         USER_ID = null;
         email = null;
-        recipeIDs = null;
+        recipeIDs = new ArrayList<>();
     }
 
-    public User(String name, String USER_ID, String email, List<String> recipeIDs) {
+    public User(String name, String USER_ID, String email) {
         this.name = name;
         this.USER_ID = USER_ID;
         this.email = email;
-        this.recipeIDs = recipeIDs;
+        this.recipeIDs = new ArrayList<>();
     }
 
 
@@ -50,6 +51,10 @@ public class User {
 
     public void setRecipeIDs(List<String> recipeIDs) {
         this.recipeIDs = recipeIDs;
+    }
+
+    public void addRecipeIDs(String recipeID) {
+        recipeIDs.add(recipeID);
     }
 
     @Override

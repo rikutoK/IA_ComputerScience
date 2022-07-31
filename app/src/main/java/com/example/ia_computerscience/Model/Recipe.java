@@ -1,5 +1,6 @@
 package com.example.ia_computerscience.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Recipe {
@@ -18,10 +19,10 @@ public abstract class Recipe {
         RECIPE_ID = null;
         author = null;
         imageID = null;
-        steps = null;
+        steps = new ArrayList<>();
         calories = 0;
         time = 0;
-        foodType = null;
+        foodType = new ArrayList<>();
     }
 
     public Recipe(String name, String RECIPE_ID, String author, String imageID, List<String> steps, int calories, int time, List<FoodType> foodType) {
@@ -72,6 +73,10 @@ public abstract class Recipe {
         this.steps = steps;
     }
 
+    protected void addSteps(String step) {
+        steps.add(step);
+    }
+
     protected int getCalories() {
         return calories;
     }
@@ -94,6 +99,10 @@ public abstract class Recipe {
 
     protected void setFoodType(List<FoodType> foodType) {
         this.foodType = foodType;
+    }
+
+    protected void addFoodType(FoodType type) {
+        foodType.add(type);
     }
 
     @Override
