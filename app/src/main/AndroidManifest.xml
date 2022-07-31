@@ -10,7 +10,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name="com.example.ia_computerscience.MainActivity"
+            android:name=".Controller.RecipeInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.AddRecipeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.PublicRecipeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.MyRecipeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Controller.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
