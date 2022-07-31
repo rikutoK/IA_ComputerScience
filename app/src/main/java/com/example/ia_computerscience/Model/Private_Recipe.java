@@ -8,7 +8,7 @@ public class Private_Recipe extends Recipe {
         super();
     }
 
-    public Private_Recipe(String name, String recipeID, String author, String imageID, List<String> steps, int calories, int time, List<FoodType> foodType) {
-        super(name, recipeID, author, imageID, steps, calories, time, foodType);
+    public Private_Recipe(String name, String RECIPE_ID, String author, String imageID, List<String> steps, int calories, int time, List<FoodType> foodType) {
+        super(name, RECIPE_ID, author, imageID, steps, calories, time, foodType);
     }
 }

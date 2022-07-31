@@ -3,8 +3,9 @@ package com.example.ia_computerscience.Model;
 import java.util.List;
 
 public abstract class Recipe {
+    final protected String RECIPE_ID;
+
     protected String name;
-    protected String recipeID;
     protected String author;
     protected String imageID;
     protected List<String> steps;
@@ -14,7 +15,7 @@ public abstract class Recipe {
 
     public Recipe() {
         name = null;
-        recipeID = null;
+        RECIPE_ID = null;
         author = null;
         imageID = null;
         steps = null;
@@ -23,9 +24,9 @@ public abstract class Recipe {
         foodType = null;
     }
 
-    public Recipe(String name, String recipeID, String author, String imageID, List<String> steps, int calories, int time, List<FoodType> foodType) {
+    public Recipe(String name, String RECIPE_ID, String author, String imageID, List<String> steps, int calories, int time, List<FoodType> foodType) {
         this.name = name;
-        this.recipeID = recipeID;
+        this.RECIPE_ID = RECIPE_ID;
         this.author = author;
         this.imageID = imageID;
         this.steps = steps;
@@ -44,11 +45,7 @@ public abstract class Recipe {
     }
 
     protected String getRecipeID() {
-        return recipeID;
-    }
-
-    protected void setRecipeID(String recipeID) {
-        this.recipeID = recipeID;
+        return RECIPE_ID;
     }
 
     protected String getAuthor() {
@@ -97,5 +94,19 @@ public abstract class Recipe {
 
     protected void setFoodType(List<FoodType> foodType) {
         this.foodType = foodType;
+    }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "RECIPE_ID='" + RECIPE_ID + '\'' +
+                ", name='" + name + '\'' +
+                ", author='" + author + '\'' +
+                ", imageID='" + imageID + '\'' +
+                ", steps=" + steps +
+                ", calories=" + calories +
+                ", time=" + time +
+                ", foodType=" + foodType +
+                '}';
     }
 }
