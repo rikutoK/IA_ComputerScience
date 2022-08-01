@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if(task.isSuccessful()) {
                         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, MyRecipeActivity.class));
+                        startActivity(new Intent(this, HomeActivity.class));
                     }
                     else {
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();

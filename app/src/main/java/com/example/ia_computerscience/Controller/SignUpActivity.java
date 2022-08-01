@@ -56,7 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
                     if(task.isSuccessful()) {
                         mUser = mAuth.getCurrentUser();
                         addUser(); //adding the newly created user to database
-                        startActivity(new Intent(this, MyRecipeActivity.class));
+                        startActivity(new Intent(this, HomeActivity.class));
                     }
                     else {
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();

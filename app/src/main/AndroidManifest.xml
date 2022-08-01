@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
+            android:name=".Controller.HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".Controller.RecipeInfoActivity"
             android:exported="false" />
         <activity
