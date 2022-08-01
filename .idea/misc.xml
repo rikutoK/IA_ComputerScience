@@ -9,7 +9,7 @@
         <entry key="app/src/main/res/layout/activity_my_recipe.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_public_recipe.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.16770833333333332" />
-        <entry key="app/src/main/res/layout/fragment_add_recipe.xml" value="0.19746376811594202" />
+        <entry key="app/src/main/res/layout/fragment_add_recipe.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_my_recipe.xml" value="0.19746376811594202" />
         <entry key="app/src/main/res/layout/fragment_public_recipe.xml" value="0.19746376811594202" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3098958333333333" />

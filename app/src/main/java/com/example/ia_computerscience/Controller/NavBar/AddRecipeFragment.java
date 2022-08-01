@@ -1,5 +1,6 @@
 package com.example.ia_computerscience.Controller.NavBar;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,15 +14,22 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.ia_computerscience.Model.FoodType;
+import com.example.ia_computerscience.Model.Private_Recipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +54,10 @@ public class AddRecipeFragment extends Fragment {
 
     private ImageView image;
     private ActivityResultLauncher<String> activityResultLauncher;
+
+    private EditText txtName;
+    private EditText txtIngredients;
+    private EditText txtInstructions;
 
     private Recipe newRecipe;
 
@@ -97,7 +109,60 @@ public class AddRecipeFragment extends Fragment {
 
         image = view.findViewById(R.id.AddRecipe_imageView);
         //selecting image from gallery
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), imageUri -> image.setImageURI(imageUri));
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                imageUri -> {
+                    image.setImageURI(imageUri);
+                    image.setTag(imageUri);
+                });
         image.setOnClickListener(v -> activityResultLauncher.launch("image/*"));
+
+        txtName = view.findViewById(R.id.AddRecipe_txtName);
+        txtInstructions = view.findViewById(R.id.AddRecipe_txtInstructions);
+        txtIngredients = view.findViewById(R.id.AddRecipe_txtIngredients);
+
+        //add on click on button
+        Button btnAdd = view.findViewById(R.id.AddRecipe_btnAdd);
+        btnAdd.setOnClickListener(v -> addNewRecipe());
+    }
+
+    public void addNewRecipe() {
+        if(!formValid()) {
+            return;
+        }
+
+        String imageID = uploadImage();
+        String name = txtName.getText().toString();
+        ArrayList<String> ingredients = (ArrayList<String>) Arrays.asList(txtIngredients.getText().toString().split("\n"));
+        ArrayList<String> instructions = (ArrayList<String>) Arrays.asList(txtInstructions.getText().toString().split("\n"));
+
+        newRecipe = new Private_Recipe();
+    }
+
+    @SuppressLint("ResourceType")
+    private boolean formValid() {
+        if(txtName.getText().toString().equals("")){
+            Toast.makeText(getContext(), "Name is empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(image.getTag() == null || (int) image.getTag() == R.drawable.ic_image) {
+            Toast.makeText(getContext(), "Image is not selected", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(txtIngredients.getText().toString().equals("")) {
+            Toast.makeText(getContext(), "Ingredients are empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(txtInstructions.getText().toString().equals("")) {
+            Toast.makeText(getContext(), "Instructions are empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private String uploadImage() {
+
+
+        return null;
     }
 }
