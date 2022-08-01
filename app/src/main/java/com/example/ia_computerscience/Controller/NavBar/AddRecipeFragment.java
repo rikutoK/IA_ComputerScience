@@ -1,15 +1,27 @@
 package com.example.ia_computerscience.Controller.NavBar;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.ia_computerscience.Model.FoodType;
+import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +38,18 @@ public class AddRecipeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore firestore;
+    private StorageReference storageReference;
+
+    private ImageView image;
+    private ActivityResultLauncher<String> activityResultLauncher;
+
+    private Recipe newRecipe;
+
+
 
     public AddRecipeFragment() {
         // Required empty public constructor
@@ -56,7 +80,6 @@ public class AddRecipeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -64,5 +87,17 @@ public class AddRecipeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_recipe, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        storageReference = FirebaseStorage.getInstance().getReference();
+
+        image = view.findViewById(R.id.AddRecipe_imageView);
+        //selecting image from gallery
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), imageUri -> image.setImageURI(imageUri));
+        image.setOnClickListener(v -> activityResultLauncher.launch("image/*"));
     }
 }
