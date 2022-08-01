@@ -9,6 +9,7 @@ public abstract class Recipe {
     protected String name;
     protected String author;
     protected String imageID;
+    protected List<String> ingredients;
     protected List<String> steps;
     protected int calories;
     protected int time;
@@ -25,11 +26,12 @@ public abstract class Recipe {
         foodType = new ArrayList<>();
     }
 
-    public Recipe(String name, String RECIPE_ID, String author, String imageID, List<String> steps, int calories, int time, List<FoodType> foodType) {
+    public Recipe(String name, String RECIPE_ID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, int time, List<FoodType> foodType) {
         this.name = name;
         this.RECIPE_ID = RECIPE_ID;
         this.author = author;
         this.imageID = imageID;
+        this.ingredients = ingredients;
         this.steps = steps;
         this.calories = calories;
         this.time = time;
@@ -63,6 +65,18 @@ public abstract class Recipe {
 
     protected void setImageID(String imageID) {
         this.imageID = imageID;
+    }
+
+    public List<String> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void addIngredients(String ingredient) {
+        ingredients.add(ingredient);
     }
 
     protected List<String> getSteps() {
@@ -112,6 +126,7 @@ public abstract class Recipe {
                 ", name='" + name + '\'' +
                 ", author='" + author + '\'' +
                 ", imageID='" + imageID + '\'' +
+                ", ingredients=" + ingredients +
                 ", steps=" + steps +
                 ", calories=" + calories +
                 ", time=" + time +
