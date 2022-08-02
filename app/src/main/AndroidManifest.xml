@@ -16,15 +16,6 @@
             android:name=".Controller.RecipeInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".Controller.AddRecipeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Controller.PublicRecipeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Controller.MyRecipeActivity"
-            android:exported="false" />
-        <activity
             android:name=".Controller.SignUpActivity"
             android:exported="false" />
         <activity

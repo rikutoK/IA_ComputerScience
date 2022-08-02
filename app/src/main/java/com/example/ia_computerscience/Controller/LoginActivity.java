@@ -9,14 +9,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
+import com.example.ia_computerscience.Util.Constants;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firestore;
 
     private EditText txtEmail;
     private EditText txtPassword;
@@ -27,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
 
         txtEmail = findViewById(R.id.Login_txtEmail);
         txtPassword = findViewById(R.id.Login_txtPassword);
@@ -43,8 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if(task.isSuccessful()) {
-                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, HomeActivity.class));
+                        getUser(); //gets user from db and moves to next activity
                     }
                     else {
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -74,5 +79,26 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
     
-    
+    private void getUser() {
+        FirebaseUser mUser = mAuth.getCurrentUser();
+
+        firestore.collection(Constants.USER).document(mUser.getUid()).get()
+                .addOnCompleteListener(this, task -> {
+                   if(task.isSuccessful()) {
+                       User user = task.getResult().toObject(User.class);
+                       goTOHomeActivity(user);
+                       Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+                   }
+                   else {
+                       Log.w(TAG, task.getException().getMessage(), task.getException());
+                       Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                   }
+                });
+    }
+
+    private void goTOHomeActivity(User user) {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(Constants.USER, user);
+        startActivity(intent);
+    }
 }

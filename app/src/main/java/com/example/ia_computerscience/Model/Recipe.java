@@ -1,12 +1,12 @@
 package com.example.ia_computerscience.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Recipe {
-    final protected String RECIPE_ID;
-
+public abstract class Recipe implements Serializable {
     protected String name;
+    protected String recipeID;
     protected String author;
     protected String imageID;
     protected List<String> ingredients;
@@ -17,7 +17,7 @@ public abstract class Recipe {
 
     public Recipe() {
         name = null;
-        RECIPE_ID = null;
+        recipeID = null;
         author = null;
         imageID = null;
         steps = new ArrayList<>();
@@ -26,9 +26,9 @@ public abstract class Recipe {
         foodType = new ArrayList<>();
     }
 
-    public Recipe(String name, String RECIPE_ID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, int time, List<FoodType> foodType) {
+    public Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, int time, List<FoodType> foodType) {
         this.name = name;
-        this.RECIPE_ID = RECIPE_ID;
+        this.recipeID = recipeID;
         this.author = author;
         this.imageID = imageID;
         this.ingredients = ingredients;
@@ -39,32 +39,28 @@ public abstract class Recipe {
     }
 
 
-    protected String getName() {
+    public String getName() {
         return name;
     }
 
-    protected void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    protected String getRecipeID() {
-        return RECIPE_ID;
+    public String getRecipeID() {
+        return recipeID;
     }
 
-    protected String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    protected void setAuthor(String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
-    protected String getImageID() {
+    public String getImageID() {
         return imageID;
-    }
-
-    protected void setImageID(String imageID) {
-        this.imageID = imageID;
     }
 
     public List<String> getIngredients() {
@@ -75,55 +71,55 @@ public abstract class Recipe {
         this.ingredients = ingredients;
     }
 
-    public void addIngredients(String ingredient) {
+    public void addIngredient(String ingredient) {
         ingredients.add(ingredient);
     }
 
-    protected List<String> getSteps() {
+    public List<String> getSteps() {
         return steps;
     }
 
-    protected void setSteps(List<String> steps) {
+    public void setSteps(List<String> steps) {
         this.steps = steps;
     }
 
-    protected void addSteps(String step) {
+    public void addStep(String step) {
         steps.add(step);
     }
 
-    protected int getCalories() {
+    public int getCalories() {
         return calories;
     }
 
-    protected void setCalories(int calories) {
+    public void setCalories(int calories) {
         this.calories = calories;
     }
 
-    protected int getTime() {
+    public int getTime() {
         return time;
     }
 
-    protected void setTime(int time) {
+    public void setTime(int time) {
         this.time = time;
     }
 
-    protected List<FoodType> getFoodType() {
+    public List<FoodType> getFoodType() {
         return foodType;
     }
 
-    protected void setFoodType(List<FoodType> foodType) {
+    public void setFoodType(List<FoodType> foodType) {
         this.foodType = foodType;
     }
 
-    protected void addFoodType(FoodType type) {
+    public void addFoodType(FoodType type) {
         foodType.add(type);
     }
 
     @Override
     public String toString() {
         return "Recipe{" +
-                "RECIPE_ID='" + RECIPE_ID + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
+                ", recipeID='" + recipeID + '\'' +
                 ", author='" + author + '\'' +
                 ", imageID='" + imageID + '\'' +
                 ", ingredients=" + ingredients +

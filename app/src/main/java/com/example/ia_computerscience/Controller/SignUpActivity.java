@@ -28,6 +28,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText txtPassword;
     private EditText txtPassword2;
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,10 @@ public class SignUpActivity extends AppCompatActivity {
                     if(task.isSuccessful()) {
                         mUser = mAuth.getCurrentUser();
                         addUser(); //adding the newly created user to database
-                        startActivity(new Intent(this, HomeActivity.class));
+
+                        Intent intent = new Intent(this, HomeActivity.class);
+                        intent.putExtra(Constants.USER, user);
+                        startActivity(intent);
                     }
                     else {
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -103,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
         String uid = mUser.getUid();
         String email = mUser.getEmail();
 
-        User user = new User(name, uid, email);
+        user = new User(name, uid, email);
 
         try {
             firestore.collection(Constants.USER).document(uid).set(user);

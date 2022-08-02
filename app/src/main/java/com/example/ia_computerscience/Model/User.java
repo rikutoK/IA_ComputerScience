@@ -1,25 +1,25 @@
 package com.example.ia_computerscience.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
-    final private String USER_ID;
-
+public class User implements Serializable {
     private String name;
+    private String userID;
     private String email;
     private List<String> recipeIDs;
 
     public User() {
         name = null;
-        USER_ID = null;
+        userID = null;
         email = null;
         recipeIDs = new ArrayList<>();
     }
 
-    public User(String name, String USER_ID, String email) {
+    public User(String name, String userID, String email) {
         this.name = name;
-        this.USER_ID = USER_ID;
+        this.userID = userID;
         this.email = email;
         this.recipeIDs = new ArrayList<>();
     }
@@ -34,7 +34,7 @@ public class User {
     }
 
     public String getUserID() {
-        return USER_ID;
+        return userID;
     }
 
     public String getEmail() {
@@ -53,15 +53,15 @@ public class User {
         this.recipeIDs = recipeIDs;
     }
 
-    public void addRecipeIDs(String recipeID) {
+    public void addRecipeID(String recipeID) {
         recipeIDs.add(recipeID);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "USER_ID='" + USER_ID + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
+                ", userID='" + userID + '\'' +
                 ", email='" + email + '\'' +
                 ", recipeIDs=" + recipeIDs +
                 '}';

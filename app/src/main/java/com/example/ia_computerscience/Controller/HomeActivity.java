@@ -3,14 +3,18 @@ package com.example.ia_computerscience.Controller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.ia_computerscience.Controller.NavBar.AddRecipeFragment;
 import com.example.ia_computerscience.Controller.NavBar.MyRecipeFragment;
 import com.example.ia_computerscience.Controller.NavBar.PublicRecipeFragment;
+import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
+import com.example.ia_computerscience.Util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
+    private static final String TAG = "HomeActivity";
 
     private BottomNavigationView bottomNavigationView;
 
@@ -18,14 +22,26 @@ public class HomeActivity extends AppCompatActivity {
     private AddRecipeFragment addRecipeFragment;
     private PublicRecipeFragment publicRecipeFragment;
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        myRecipeFragment = new MyRecipeFragment();
-        addRecipeFragment = new AddRecipeFragment();
-        publicRecipeFragment = new PublicRecipeFragment();
+        if(getIntent().hasExtra(Constants.USER)) {
+            user = (User) getIntent().getSerializableExtra(Constants.USER);
+
+            myRecipeFragment = MyRecipeFragment.newInstance(user);
+            addRecipeFragment = AddRecipeFragment.newInstance(user);
+            publicRecipeFragment = PublicRecipeFragment.newInstance(user);
+        }
+        else {
+            myRecipeFragment = new MyRecipeFragment();
+            addRecipeFragment = new AddRecipeFragment();
+            publicRecipeFragment = new PublicRecipeFragment();
+        }
+
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, myRecipeFragment).commit();

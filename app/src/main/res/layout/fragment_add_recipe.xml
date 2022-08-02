@@ -32,7 +32,7 @@
                 android:id="@+id/AddRecipe_imageView"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
-                android:src="@drawable/ic_image"
+                android:src="@drawable/ic_image_add"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,12 +40,11 @@
 
             <EditText
                 android:id="@+id/AddRecipe_txtIngredients"
-                android:layout_width="236dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:ems="10"
                 android:gravity="start|top"
-                android:hint="Ingredients"
+                android:hint="Ingredients \n - Ingredient 1 \n - Ingredient 2 \n - Ingredient 3"
                 android:inputType="textMultiLine"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -55,12 +54,12 @@
 
             <EditText
                 android:id="@+id/AddRecipe_txtInstructions"
-                android:layout_width="232dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
                 android:gravity="start|top"
-                android:hint="Instructions"
+                android:hint="Instructions \n 1. Step 1 \n 2. Step 2 \n 3. Step 3"
                 android:inputType="textMultiLine"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
