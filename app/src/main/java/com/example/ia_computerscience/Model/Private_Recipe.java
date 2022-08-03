@@ -9,7 +9,7 @@ public class Private_Recipe extends Recipe {
         super();
     }
 
-    public Private_Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, int time, List<FoodType> foodType) {
+    public Private_Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, String time, List<FoodType> foodType) {
         super(name, recipeID, author, imageID, ingredients, steps, calories, time, foodType);
     }
 

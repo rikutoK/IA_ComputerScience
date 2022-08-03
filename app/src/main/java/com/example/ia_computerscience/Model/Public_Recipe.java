@@ -11,7 +11,7 @@ public class Public_Recipe extends Recipe implements Serializable {
         this.likes = likes;
     }
 
-    public Public_Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, int time, List<FoodType> foodType, int likes) {
+    public Public_Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, String time, List<FoodType> foodType, int likes) {
         super(name, recipeID, author, imageID, ingredients, steps, calories, time, foodType);
         this.likes = likes;
     }

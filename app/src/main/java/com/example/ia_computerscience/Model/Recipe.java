@@ -12,7 +12,7 @@ public abstract class Recipe implements Serializable {
     protected List<String> ingredients;
     protected List<String> steps;
     protected int calories;
-    protected int time;
+    protected String time;
     protected List<FoodType> foodType;
 
     public Recipe() {
@@ -22,11 +22,11 @@ public abstract class Recipe implements Serializable {
         imageID = null;
         steps = new ArrayList<>();
         calories = 0;
-        time = 0;
+        time = "0 min";
         foodType = new ArrayList<>();
     }
 
-    public Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, int time, List<FoodType> foodType) {
+    public Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, String time, List<FoodType> foodType) {
         this.name = name;
         this.recipeID = recipeID;
         this.author = author;
@@ -95,11 +95,11 @@ public abstract class Recipe implements Serializable {
         this.calories = calories;
     }
 
-    public int getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
