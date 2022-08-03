@@ -1,4 +1,4 @@
-package com.example.ia_computerscience.Controller;
+package com.example.ia_computerscience.Controller.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -10,19 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".Controller.HomeActivity"
+            android:name=".Controller.Activity.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".Controller.RecipeInfoActivity"
+            android:name=".Controller.Activity.RecipeInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".Controller.SignUpActivity"
+            android:name=".Controller.Activity.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".Controller.LoginActivity"
+            android:name=".Controller.Activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".Controller.MainActivity"
+            android:name=".Controller.Activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
