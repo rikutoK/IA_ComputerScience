@@ -209,8 +209,8 @@ public class AddRecipeFragment extends Fragment {
             newRecipe = new Private_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
         }
 
-//        documentReference.set(newRecipe);
-//        updateUser(recipeID); //add recipe to list and update database
+        documentReference.set(newRecipe);
+        updateUser(recipeID); //add recipe to list and update database
         Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
     }
 
