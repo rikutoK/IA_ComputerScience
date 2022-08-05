@@ -73,9 +73,9 @@ public class RecipeInfoActivity extends AppCompatActivity {
 
         String instructions = "Steps \n \n";
         for(String s : recipe.getSteps()) {
-            instructions += s + "\n";
+            instructions += s + "\n \n";
         }
-        txtInstructions.setText(instructions.substring(0, instructions.length() - 2));
+        txtInstructions.setText(instructions.substring(0, instructions.length() - 5));
     }
 
     private void getImage() {

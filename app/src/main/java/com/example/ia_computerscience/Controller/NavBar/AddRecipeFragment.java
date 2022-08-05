@@ -39,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -183,8 +184,10 @@ public class AddRecipeFragment extends Fragment {
 
         String name = txtName.getText().toString();
 
-        List<String> ingredients = Arrays.asList(txtIngredients.getText().toString().split("\n"));
-        List<String> instructions = Arrays.asList(txtInstructions.getText().toString().split("\n"));
+        ArrayList<String> ingredients = new ArrayList<>(Arrays.asList(txtIngredients.getText().toString().split("\n")));
+        ingredients.removeAll(Arrays.asList(""));
+        ArrayList<String> instructions = new ArrayList<>(Arrays.asList(txtInstructions.getText().toString().split("\n")));
+        instructions.removeAll(Arrays.asList(""));
 
         int calories = Integer.parseInt(txtCal.getText().toString());
 
@@ -206,8 +209,8 @@ public class AddRecipeFragment extends Fragment {
             newRecipe = new Private_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
         }
 
-        documentReference.set(newRecipe);
-        updateUser(recipeID); //add recipe to list and update database
+//        documentReference.set(newRecipe);
+//        updateUser(recipeID); //add recipe to list and update database
         Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
     }
 
