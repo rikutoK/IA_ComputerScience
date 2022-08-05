@@ -8,7 +8,8 @@ public enum FoodType {
     DESSERT("Dessert"),
     DRINK("Drink"),
     SWEET("Sweet"),
-    SAVORY("Savory");
+    SAVORY("Savory"),
+    OTHER("Other");
 
     private String value;
 

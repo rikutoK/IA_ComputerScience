@@ -1,6 +1,7 @@
 package com.example.ia_computerscience.Controller.NavBar;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,17 +9,27 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ia_computerscience.Model.FoodType;
 import com.example.ia_computerscience.Model.Private_Recipe;
+import com.example.ia_computerscience.Model.Public_Recipe;
+import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -26,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +60,8 @@ public class AddRecipeFragment extends Fragment {
     private DocumentReference documentReference;
     private StorageReference storageReference;
 
+    private Chip private_public;
+
     private ImageView imageView;
     private Uri imageUri;
     private ActivityResultLauncher<String> activityResultLauncher;
@@ -56,7 +70,16 @@ public class AddRecipeFragment extends Fragment {
     private EditText txtIngredients;
     private EditText txtInstructions;
 
-    private Private_Recipe newRecipe;
+    private ChipGroup chipGroup;
+    private Chip[] chips;
+
+    private EditText txtCal;
+    private EditText txtTime;
+    private Spinner spinner;
+    private String selectedTime;
+
+    private Recipe newRecipe;
+
 
 
 
@@ -101,6 +124,20 @@ public class AddRecipeFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        private_public = view.findViewById(R.id.AddRecipe_public);
+        private_public.setOnClickListener(v -> {
+            if(private_public.isChecked()) {
+                private_public.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.publicColor)));
+                private_public.setChipIconResource(R.drawable.ic_lock_open);
+                private_public.setText("Public");
+            }
+            else {
+                private_public.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.privateColor)));
+                private_public.setChipIconResource(R.drawable.ic_lock);
+                private_public.setText("Private");
+            }
+        });
+
         imageView = view.findViewById(R.id.AddRecipe_imageView);
         imageView.setTag(false);
         //selecting image from gallery
@@ -125,6 +162,13 @@ public class AddRecipeFragment extends Fragment {
 
         //add on click on button
         view.findViewById(R.id.AddRecipe_btnAdd).setOnClickListener(v -> addNewRecipe());
+
+        initChipGroup();
+
+        txtCal = view.findViewById(R.id.AddRecipe_txtCal);
+        txtTime = view.findViewById(R.id.AddRecipe_txtTime);
+
+        setUpSpinner();
     }
 
     public void addNewRecipe() {
@@ -142,7 +186,25 @@ public class AddRecipeFragment extends Fragment {
         List<String> ingredients = Arrays.asList(txtIngredients.getText().toString().split("\n"));
         List<String> instructions = Arrays.asList(txtInstructions.getText().toString().split("\n"));
 
-        newRecipe = new Private_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, 0, 30, null);
+        int calories = Integer.parseInt(txtCal.getText().toString());
+
+        double t = Double.parseDouble(txtTime.getText().toString());
+        String time;
+        if(t%1 == 0) {
+            time = (int) t + selectedTime;
+        }
+        else {
+            time = t + selectedTime;
+        }
+
+        List<FoodType> foodType = getSelectedFoodType();
+
+        if(private_public.isChecked()) {
+            newRecipe = new Public_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
+        }
+        else {
+            newRecipe = new Private_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
+        }
 
         documentReference.set(newRecipe);
         updateUser(recipeID); //add recipe to list and update database
@@ -167,6 +229,26 @@ public class AddRecipeFragment extends Fragment {
             Toast.makeText(getContext(), "Instructions are empty", Toast.LENGTH_SHORT).show();
             return false;
         }
+        if(txtCal.getText().toString().equals("")) {
+            Toast.makeText(getContext(), "Calories are empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(txtTime.getText().toString().equals("")) {
+            Toast.makeText(getContext(), "Time is empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+        boolean selected = false;
+        for(Chip chip : chips) {
+            if(chip.isChecked()) {
+                selected = true;
+            }
+        }
+        if(!selected) {
+            Toast.makeText(getContext(), "Food Type is not selected", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
         return true;
     }
@@ -186,5 +268,72 @@ public class AddRecipeFragment extends Fragment {
     private void updateUser(String recipeID) {
         user.addRecipeID(recipeID);
         firestore.collection(Constants.USER).document(user.getUserID()).update(Constants.RECIPE_IDS, FieldValue.arrayUnion(recipeID));
+    }
+
+    private void initChipGroup() {
+        chipGroup = getView().findViewById(R.id.AddRecipe_chipGroup);
+        FoodType[] f = FoodType.values();
+        chips = new Chip[f.length];
+
+        for(int i = 0; i < f.length; i++) {
+            Chip chip = new Chip(getContext());
+            chip.setText(f[i].getValue());
+            chip.setTextSize(16);
+            chip.setCheckable(true);
+            chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+
+            chip.setOnClickListener(view -> {
+                if(chip.isChecked()) {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.purple_200)));
+                    chip.setTextColor(getResources().getColor(R.color.white));
+                }
+                else {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                    chip.setTextColor(getResources().getColor(R.color.black));
+                }
+            });
+
+            chipGroup.addView(chip);
+            chips[i] = chip;
+        }
+    }
+
+    private List<FoodType> getSelectedFoodType() {
+        List<FoodType> foodType = new ArrayList<>();
+        FoodType[] f = FoodType.values();
+
+        for(int i = 0; i < chips.length; i++) {
+            if(chips[i].isChecked()) {
+                foodType.add(f[i]);
+            }
+        }
+
+        return foodType;
+    }
+
+    private void setUpSpinner() {
+        final String[] time = {"min", "hour"};
+
+        spinner = getView().findViewById(R.id.AddRecipe_spinner);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, time);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedTime = adapterView.getItemAtPosition(i).toString();
+//                ((TextView) adapterView.getChildAt(0)).setTextSize(20);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public void private_public(View view) {
+
     }
 }

@@ -9,8 +9,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="41dp">
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="-16dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -20,9 +20,9 @@
                 android:id="@+id/AddRecipe_txtAddRecipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="56dp"
                 android:text="Add Recipe"
-                android:textSize="34dp"
+                android:textSize="34sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +71,7 @@
                 android:id="@+id/AddRecipe_btnAdd"
                 android:layout_width="300dp"
                 android:layout_height="65dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="24dp"
                 android:text="Add"
                 android:textSize="20sp"
@@ -80,20 +80,110 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AddRecipe_txtInstructions"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
             <EditText
                 android:id="@+id/AddRecipe_txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:ems="10"
                 android:hint="Recipe Name"
                 android:inputType="textPersonName"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@+id/AddRecipe_imageView"
+                app:layout_constraintTop_toBottomOf="@+id/AddRecipe_public" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/AddRecipe_txtTime">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/AddRecipe_chipGroup"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:clipToPadding="false" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <EditText
+                android:id="@+id/AddRecipe_txtCal"
+                android:layout_width="85dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Calories"
+                android:inputType="number"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.411"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/AddRecipe_txtInstructions" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kcl"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/AddRecipe_txtCal"
+                app:layout_constraintStart_toEndOf="@+id/AddRecipe_txtCal"
+                app:layout_constraintTop_toTopOf="@+id/AddRecipe_txtCal" />
+
+            <EditText
+                android:id="@+id/AddRecipe_txtTime"
+                android:layout_width="85dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Time"
+                android:inputType="numberDecimal"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="@+id/AddRecipe_txtInstructions"
+                app:layout_constraintTop_toBottomOf="@+id/AddRecipe_txtCal" />
+
+            <Spinner
+                android:id="@+id/AddRecipe_spinner"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                app:layout_constraintBottom_toBottomOf="@+id/AddRecipe_txtTime"
+                app:layout_constraintStart_toEndOf="@+id/AddRecipe_txtTime"
+                app:layout_constraintTop_toTopOf="@+id/AddRecipe_txtTime" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/AddRecipe_public"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:checkable="true"
+                android:text="Private"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:checkedIcon="@drawable/ic_lock_open"
+                app:chipBackgroundColor="@color/privateColor"
+                app:chipEndPadding="10dp"
+                app:chipIcon="@drawable/ic_lock"
+                app:closeIconVisible="false"
+                app:iconStartPadding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/AddRecipe_txtAddRecipe" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,10 +111,6 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                 });
     }
 
-    private void getImages() {
-
-    }
-
     private void setUpRecView() {
         RecyclerView recView = getView().findViewById(R.id.MyRecipe_recView);
         RecViewAdapter adapter = new RecViewAdapter(getContext(), recipeList, this);
@@ -123,6 +120,17 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
     @Override
     public void onViewClick(int position) {
-        startActivity(new Intent(getContext(), RecipeInfoActivity.class));
+        firestore.collection(Constants.RECIPE).document(user.getRecipeIDs().get(position)).get()
+                        .addOnCompleteListener(getActivity(), task -> {
+                            if(task.isSuccessful() && task.getResult() != null) {
+                                Recipe recipe = task.getResult().toObject(Private_Recipe.class);
+                                Intent intent = new Intent(getContext(), RecipeInfoActivity.class);
+                                intent.putExtra(Constants.RECIPE, recipe);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
     }
 }

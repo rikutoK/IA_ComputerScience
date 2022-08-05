@@ -6,14 +6,14 @@ import java.util.List;
 public class Public_Recipe extends Recipe implements Serializable {
     private int likes;
 
-    public Public_Recipe(int likes) {
+    public Public_Recipe() {
         super();
-        this.likes = likes;
+        this.likes = 0;
     }
 
-    public Public_Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, String time, List<FoodType> foodType, int likes) {
+    public Public_Recipe(String name, String recipeID, String author, String imageID, List<String> ingredients, List<String> steps, int calories, String time, List<FoodType> foodType) {
         super(name, recipeID, author, imageID, ingredients, steps, calories, time, foodType);
-        this.likes = likes;
+        this.likes = 0;
     }
 
 
