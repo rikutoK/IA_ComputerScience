@@ -115,6 +115,38 @@ public abstract class Recipe implements Serializable {
         foodType.add(type);
     }
 
+
+    public int compareNameTo(Recipe r) {
+        return this.getName().compareTo(r.getName());
+    }
+
+    public int compareCalTo(Recipe r) {
+        Integer i1 = this.getCalories();
+        Integer i2 = r.getCalories();
+        return i1.compareTo(i2);
+    }
+
+    public int compareTimeTo(Recipe r) {
+        Double i1, i2;
+
+        if(this.getTime().endsWith("min")) {
+            i1 = new Double(this.getTime().substring(0, this.getTime().length() - 3));
+        }
+        else {
+            i1 = new Double(this.getTime().substring(0, this.getTime().length() - 4)) * 60;
+        }
+
+        if(r.getTime().endsWith("min")) {
+            i2 = new Double(r.getTime().substring(0, r.getTime().length() - 3));
+        }
+        else {
+            i2 = new Double(r.getTime().substring(0, r.getTime().length() - 4)) * 60;
+        }
+
+        return i1.compareTo(i2);
+    }
+
+
     @Override
     public String toString() {
         return "Recipe{" +

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:text="My Recipe"
         android:textSize="34dp"
         android:textStyle="bold"
@@ -21,7 +21,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/MyRecipe_recView"
-        android:layout_width="346dp"
+        android:layout_width="0dp"
         android:layout_height="500dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
@@ -29,5 +29,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <SearchView
+        android:id="@+id/MyRecipe_searchView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search"
+        app:layout_constraintBottom_toTopOf="@+id/MyRecipe_recView"
+        app:layout_constraintEnd_toStartOf="@+id/MyRecipe_spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MyRecipe_txtMyRecipe"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Spinner
+        android:id="@+id/MyRecipe_spinner"
+        android:layout_width="110dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/MyRecipe_searchView"
+        app:layout_constraintEnd_toStartOf="@+id/MyRecipe_chip"
+        app:layout_constraintTop_toTopOf="@+id/MyRecipe_searchView"
+        app:layout_constraintVertical_bias="0.526" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/MyRecipe_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:checkable="true"
+        android:clickable="true"
+        app:checkedIconVisible="false"
+        app:chipEndPadding="4dp"
+        app:chipIcon="@drawable/ic_down"
+        app:layout_constraintBottom_toBottomOf="@+id/MyRecipe_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/MyRecipe_spinner"
+        app:layout_constraintVertical_bias="0.526"
+        app:textEndPadding="0dp"
+        app:textStartPadding="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

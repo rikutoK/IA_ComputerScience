@@ -335,8 +335,4 @@ public class AddRecipeFragment extends Fragment {
             }
         });
     }
-
-    public void private_public(View view) {
-
-    }
 }

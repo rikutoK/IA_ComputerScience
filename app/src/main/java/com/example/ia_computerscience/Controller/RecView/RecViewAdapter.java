@@ -69,6 +69,11 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         void onViewClick(int position);
     }
 
+    public void setRecipeList(ArrayList<Recipe> recipeList) {
+        this.recipeList = recipeList;
+        notifyDataSetChanged();
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         OnViewClickListner onViewClickListner;
 

@@ -1,6 +1,7 @@
 package com.example.ia_computerscience.Controller.NavBar;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ia_computerscience.Controller.Activity.RecipeInfoActivity;
@@ -23,11 +28,15 @@ import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.chip.Chip;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +50,17 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
     private static final String ARG_PARAM1 = "param1";
 
     private User user;
+    private ArrayList<Recipe> entireRecipeList;
+    private int index;
+
+    private SearchView searchView;
+
+    private Spinner spinner;
+    private Chip chip;
+
     private ArrayList<Recipe> recipeList;
+
+    private RecViewAdapter adapter;
 
     private FirebaseFirestore firestore;
 
@@ -86,24 +105,134 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
         firestore = FirebaseFirestore.getInstance();
 
-        getRecipes();
+        searchView = view.findViewById(R.id.MyRecipe_searchView);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return false;
+            }
+        });
+
+        getRecipes(); //gets reciep, set up rec view, set up spinner
+    }
+
+    private void filterList(String newText) {
+        recipeList = new ArrayList<>();
+
+        for(Recipe recipe : entireRecipeList) {
+            if(recipe.getName().toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT))) {
+                recipeList.add(recipe);
+            }
+        }
+
+        adapter.setRecipeList(recipeList);
+    }
+
+    private void setUpSpinner() {
+        final String[] sort = {"Name", "Cal", "Time"};
+
+        spinner = getView().findViewById(R.id.MyRecipe_spinner);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sort);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch(adapterView.getItemAtPosition(i).toString()) {
+                    case "Name":
+                        Collections.sort(recipeList, Recipe :: compareNameTo);
+                        adapter.setRecipeList(recipeList);
+                        break;
+                    case "Cal":
+                        Collections.sort(recipeList, Recipe :: compareCalTo);
+                        adapter.setRecipeList(recipeList);
+                        break;
+                    case "Time":
+                        Collections.sort(recipeList, Recipe :: compareTimeTo);
+                        adapter.setRecipeList(recipeList);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        chip = getView().findViewById(R.id.MyRecipe_chip);
+        chip.setOnClickListener(v -> {
+            Collections.reverse(recipeList);
+            adapter.setRecipeList(recipeList);
+
+            if(chip.isChecked()) {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                chip.setChipIconResource(R.drawable.ic_up);
+            }
+            else {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                chip.setChipIconResource(R.drawable.ic_down);
+            }
+        });
     }
 
     private void getRecipes() {
+        index = 0;
+        entireRecipeList = new ArrayList<>();
         recipeList = new ArrayList<>();
 
         if(user.getRecipeIDs().size() == 0) {
             return;
         }
 
-        firestore.collection(Constants.RECIPE).whereIn(Constants.RECIPE_ID, user.getRecipeIDs()).get()
+        ArrayList<String> recipeIDs = new ArrayList<>();
+
+        while(index + 10 < user.getRecipeIDs().size()) {
+            recipeIDs.clear();
+            for(int i = 0; i < 10; i++) {
+                recipeIDs.add(user.getRecipeIDs().get(index));
+                index++;
+            }
+
+            firestore.collection(Constants.RECIPE).whereIn(Constants.RECIPE_ID, recipeIDs).get()
+                    .addOnCompleteListener(getActivity(), task -> {
+                        if(task.isSuccessful()) {
+                            for(QueryDocumentSnapshot document : task.getResult()) {
+                                Private_Recipe recipe = document.toObject(Private_Recipe.class);
+                                entireRecipeList.add(recipe);
+                            }
+                        }
+                        else {
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
+        recipeIDs.clear();
+        for(int i = index; i < user.getRecipeIDs().size(); i++) {
+            recipeIDs.add(user.getRecipeIDs().get(i));
+        }
+
+        firestore.collection(Constants.RECIPE).whereIn(Constants.RECIPE_ID, recipeIDs).get()
                 .addOnCompleteListener(getActivity(), task -> {
                    if(task.isSuccessful()) {
                        for(QueryDocumentSnapshot document : task.getResult()) {
                            Private_Recipe recipe = document.toObject(Private_Recipe.class);
-                           recipeList.add(recipe);
+                           entireRecipeList.add(recipe);
                        }
+                       recipeList = entireRecipeList;
+
                        setUpRecView(); //sets up recyclerview
+
+                       setUpSpinner(); //sets up spinner
                    }
                    else {
                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -113,24 +242,16 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
     private void setUpRecView() {
         RecyclerView recView = getView().findViewById(R.id.MyRecipe_recView);
-        RecViewAdapter adapter = new RecViewAdapter(getContext(), recipeList, this);
+        adapter = new RecViewAdapter(getContext(), recipeList, this);
         recView.setAdapter(adapter);
         recView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     @Override
     public void onViewClick(int position) {
-        firestore.collection(Constants.RECIPE).document(user.getRecipeIDs().get(position)).get()
-                        .addOnCompleteListener(getActivity(), task -> {
-                            if(task.isSuccessful() && task.getResult() != null) {
-                                Recipe recipe = task.getResult().toObject(Private_Recipe.class);
-                                Intent intent = new Intent(getContext(), RecipeInfoActivity.class);
-                                intent.putExtra(Constants.RECIPE, recipe);
-                                startActivity(intent);
-                            }
-                            else {
-                                Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+        Recipe recipe = recipeList.get(position);
+        Intent intent = new Intent(getContext(), RecipeInfoActivity.class);
+        intent.putExtra(Constants.RECIPE, recipe);
+        startActivity(intent);
     }
 }

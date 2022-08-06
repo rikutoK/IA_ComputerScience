@@ -11,7 +11,8 @@
         android:theme="@style/Theme.MyApplication">
         <activity
             android:name=".Controller.Activity.HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Controller.Activity.RecipeInfoActivity"
             android:exported="false" />
