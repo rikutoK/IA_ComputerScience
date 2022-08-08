@@ -54,6 +54,7 @@ public class RecipeInfoActivity extends AppCompatActivity {
     private ChipGroup chipGroup;
 
     private ImageView imageView;
+    private TextView txtAuthor;
     private TextView txtIngredients;
     private TextView txtInstructions;
 
@@ -93,6 +94,7 @@ public class RecipeInfoActivity extends AppCompatActivity {
         chipGroup = findViewById(R.id.RecipeInfo_chipGroup);
 
         imageView = findViewById(R.id.RecipeInfo_imageView);
+        txtAuthor = findViewById(R.id.RecipeInfo_txtAuthor);
         txtIngredients = findViewById(R.id.RecipeInfo_txtIngredients);
         txtInstructions = findViewById(R.id.RecipeInfo_txtInstructions);
 
@@ -135,6 +137,8 @@ public class RecipeInfoActivity extends AppCompatActivity {
 
             chipGroup.addView(chip);
         }
+
+        txtAuthor.setText("Created by " + recipe.getAuthor());
 
         String ingredients = "Ingredients \n \n";
         for(String s : recipe.getIngredients()) {

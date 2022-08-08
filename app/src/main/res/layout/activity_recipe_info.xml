@@ -115,6 +115,15 @@
                     app:srcCompat="@drawable/ic_image" />
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/RecipeInfo_txtAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Created by"
+                android:textSize="20sp" />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
