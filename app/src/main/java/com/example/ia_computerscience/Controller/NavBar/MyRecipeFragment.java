@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -23,12 +27,14 @@ import android.widget.Toast;
 import com.example.ia_computerscience.Controller.Activity.RecipeInfoActivity;
 import com.example.ia_computerscience.Controller.RecView.RecViewAdapter;
 import com.example.ia_computerscience.Model.Private_Recipe;
+import com.example.ia_computerscience.Model.Public_Recipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -50,7 +56,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
     private static final String ARG_PARAM1 = "param1";
 
     private User user;
-    private ArrayList<Recipe> entireRecipeList;
+    private ArrayList<Recipe> entireRecipeList; //stores all recipe in the list
     private int index;
 
     private SearchView searchView;
@@ -58,11 +64,13 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
     private Spinner spinner;
     private Chip chip;
 
-    private ArrayList<Recipe> recipeList;
+    private ArrayList<Recipe> recipeList; //recipe list on display
 
     private RecViewAdapter adapter;
 
     private FirebaseFirestore firestore;
+
+    private ActivityResultLauncher<Intent> startForResult;
 
 
     public MyRecipeFragment() {
@@ -121,6 +129,68 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         });
 
         getRecipes(); //gets reciep, set up rec view, set up spinner
+
+
+        //check if the recipe was removed in the RecipeInfoActivity
+        startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getData() != null && result.getData().getStringExtra(Constants.RECIPE_ID) != null && result.getData().hasExtra(Constants.REMOVE)) {
+                    String recipeID = result.getData().getStringExtra(Constants.RECIPE_ID);
+
+                    if(result.getData().getExtras().getBoolean(Constants.REMOVE)) { //remove
+                        user.getRecipeIDs().remove(recipeID);
+
+                        Recipe recipe = null;
+
+                        for(Recipe r : entireRecipeList) {
+                            if (r.getRecipeID().equals(recipeID)) {
+                                recipe = r;
+                            }
+                        }
+
+                        entireRecipeList.remove(recipe);
+                        recipeList.remove(recipe);
+                        adapter.setRecipeList(recipeList);
+
+                        //remove from firebase
+                        firestore.collection(Constants.USER).document(user.getUserID()).update(Constants.RECIPE_IDS, FieldValue.arrayRemove(recipe.getRecipeID()));
+                        user.getRecipeIDs().remove(recipe.getRecipeID());
+
+                        if(recipe instanceof Public_Recipe) {
+                            Public_Recipe pRecipe = (Public_Recipe) recipe;
+                            firestore.collection(Constants.RECIPE).document(pRecipe.getRecipeID()).update(Constants.LIKES, FieldValue.increment(-1));
+                            pRecipe.setLikes(pRecipe.getLikes() - 1);
+                        }
+                    }
+                    else { //add
+                        user.getRecipeIDs().add(recipeID);
+
+                        Recipe recipe = null;
+
+                        for(Recipe r : entireRecipeList) {
+                            if (r.getRecipeID().equals(recipeID)) {
+                                recipe = r;
+                            }
+                        }
+
+                        entireRecipeList.add(recipe);
+                        recipeList.add(recipe);
+                        adapter.setRecipeList(recipeList);
+
+                        //add to firebase
+                        firestore.collection(Constants.USER).document(user.getUserID()).update(Constants.RECIPE_IDS, FieldValue.arrayUnion(recipe.getRecipeID()));
+                        user.getRecipeIDs().add(recipe.getRecipeID());
+
+                        if(recipe instanceof Public_Recipe) {
+                            Public_Recipe pRecipe = (Public_Recipe) recipe;
+                            firestore.collection(Constants.RECIPE).document(pRecipe.getRecipeID()).update(Constants.LIKES, FieldValue.increment(1));
+                            pRecipe.setLikes(pRecipe.getLikes() + 1);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void filterList(String newText) {
@@ -206,7 +276,14 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                     .addOnCompleteListener(getActivity(), task -> {
                         if(task.isSuccessful()) {
                             for(QueryDocumentSnapshot document : task.getResult()) {
-                                Private_Recipe recipe = document.toObject(Private_Recipe.class);
+                                Recipe recipe;
+                                if(document.contains(Constants.LIKES)) {
+                                    recipe = document.toObject(Public_Recipe.class);
+                                }
+                                else {
+                                    recipe = document.toObject(Private_Recipe.class);
+                                }
+
                                 entireRecipeList.add(recipe);
                             }
                         }
@@ -225,7 +302,15 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                 .addOnCompleteListener(getActivity(), task -> {
                    if(task.isSuccessful()) {
                        for(QueryDocumentSnapshot document : task.getResult()) {
-                           Private_Recipe recipe = document.toObject(Private_Recipe.class);
+                           Recipe recipe;
+
+                           if(document.contains(Constants.LIKES)) {
+                               recipe = document.toObject(Public_Recipe.class);
+                           }
+                           else {
+                               recipe = document.toObject(Private_Recipe.class);
+                           }
+
                            entireRecipeList.add(recipe);
                        }
                        recipeList = entireRecipeList;
@@ -252,6 +337,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         Recipe recipe = recipeList.get(position);
         Intent intent = new Intent(getContext(), RecipeInfoActivity.class);
         intent.putExtra(Constants.RECIPE, recipe);
-        startActivity(intent);
+        intent.putExtra(Constants.USER, user);
+        startForResult.launch(intent);
     }
 }

@@ -6,7 +6,8 @@ public class Constants {
 
     final public static String RECIPE = "Recipe";
     final public static String RECIPE_ID = "recipeID";
-
+    final public static String LIKES = "likes";
+    final public static String REMOVE = "remove";
 
     final public static String IMAGE_PATH = "images/";
 

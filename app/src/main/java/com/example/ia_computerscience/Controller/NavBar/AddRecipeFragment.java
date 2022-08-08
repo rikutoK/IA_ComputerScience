@@ -164,7 +164,7 @@ public class AddRecipeFragment extends Fragment {
         //add on click on button
         view.findViewById(R.id.AddRecipe_btnAdd).setOnClickListener(v -> addNewRecipe());
 
-        initChipGroup();
+        setUpChipGroup();
 
         txtCal = view.findViewById(R.id.AddRecipe_txtCal);
         txtTime = view.findViewById(R.id.AddRecipe_txtTime);
@@ -273,7 +273,7 @@ public class AddRecipeFragment extends Fragment {
         firestore.collection(Constants.USER).document(user.getUserID()).update(Constants.RECIPE_IDS, FieldValue.arrayUnion(recipeID));
     }
 
-    private void initChipGroup() {
+    private void setUpChipGroup() {
         chipGroup = getView().findViewById(R.id.AddRecipe_chipGroup);
         FoodType[] f = FoodType.values();
         chips = new Chip[f.length];
