@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHolder> {
     private Context context;
@@ -28,12 +31,16 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
     private StorageReference storageReference;
     final private long FIVE_MEGABYTE = 1024 * 1024 * 5;
 
+    private Map<String, Bitmap> images;
+
     public RecViewAdapter(Context context, ArrayList<Recipe> recipeList, OnViewClickListner onViewClickListner) {
         this.context = context;
         this.recipeList = recipeList;
         this.onViewClickListner = onViewClickListner;
 
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        images = new HashMap<>();
     }
 
     @NonNull
@@ -50,14 +57,27 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         holder.txtCal.setText(recipeList.get(position).getCalories() + "kcl");
         holder.txtTime.setText(recipeList.get(position).getTime());
 
-        storageReference = FirebaseStorage.getInstance().getReference(Constants.IMAGE_PATH + recipeList.get(position).getImageID());
-        storageReference.getBytes(FIVE_MEGABYTE)
-                .addOnCompleteListener(task -> {
-                   if(task.isSuccessful()) {
-                       Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                       holder.imageView.setImageBitmap(bitmap);
-                   }
-                });
+
+        if(images.containsKey(recipeList.get(position).getImageID())) { //if image already loaded
+            holder.imageView.setImageBitmap(images.get(recipeList.get(position).getImageID()));
+        }
+        else { //get image from storage
+            storageReference = FirebaseStorage.getInstance().getReference(Constants.IMAGE_PATH + recipeList.get(position).getImageID());
+            storageReference.getBytes(FIVE_MEGABYTE)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                            images.put(recipeList.get(position).getImageID(), bitmap);
+                            holder.imageView.setImageBitmap(bitmap);
+                        }
+                        else {
+                            Toast.makeText(context, "Image failed to load", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
+
+
     }
 
     @Override
@@ -65,13 +85,13 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         return recipeList.size();
     }
 
-    public interface OnViewClickListner {
-        void onViewClick(int position);
-    }
-
     public void setRecipeList(ArrayList<Recipe> recipeList) {
         this.recipeList = recipeList;
         notifyDataSetChanged();
+    }
+
+    public interface OnViewClickListner {
+        void onViewClick(int position);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
