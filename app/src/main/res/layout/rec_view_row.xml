@@ -37,7 +37,7 @@
                 android:id="@+id/RecView_txtTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginBottom="16dp"
                 android:drawableLeft="@drawable/ic_time"
                 android:drawablePadding="2dp"
@@ -46,6 +46,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/RecView_txtCal"
                 app:layout_constraintTop_toBottomOf="@+id/RecView_imageView" />
+
+            <TextView
+                android:id="@+id/RecView_txtLikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="16dp"
+                android:drawableLeft="@drawable/ic_liked"
+                android:drawablePadding="2dp"
+                android:text="Like"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/RecView_txtTime"
+                app:layout_constraintTop_toBottomOf="@+id/RecView_imageView"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/RecView_imageView"

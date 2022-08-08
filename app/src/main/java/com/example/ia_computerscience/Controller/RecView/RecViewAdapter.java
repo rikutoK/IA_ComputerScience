@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ia_computerscience.Model.Public_Recipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
@@ -56,6 +57,14 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         holder.txtName.setText(recipeList.get(position).getName());
         holder.txtCal.setText(recipeList.get(position).getCalories() + "kcl");
         holder.txtTime.setText(recipeList.get(position).getTime());
+
+        if(recipeList.get(position) instanceof Public_Recipe) {
+            holder.txtLikes.setVisibility(View.VISIBLE);
+            holder.txtLikes.setText(((Public_Recipe) recipeList.get(position)).getLikes() + "");
+        }
+        else {
+            holder.txtLikes.setVisibility(View.INVISIBLE);
+        }
 
 
         if(images.containsKey(recipeList.get(position).getImageID())) { //if image already loaded
@@ -101,6 +110,7 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         TextView txtName;
         TextView txtCal;
         TextView txtTime;
+        TextView txtLikes;
 
         public MyViewHolder(@NonNull View itemView, OnViewClickListner onViewClickListner) {
             super(itemView);
@@ -111,6 +121,7 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
             txtName = itemView.findViewById(R.id.RecView_txtName);
             txtCal = itemView.findViewById(R.id.RecView_txtCal);
             txtTime = itemView.findViewById(R.id.RecView_txtTime);
+            txtLikes = itemView.findViewById(R.id.RecView_txtLikes);
 
             itemView.setOnClickListener(this);
         }
