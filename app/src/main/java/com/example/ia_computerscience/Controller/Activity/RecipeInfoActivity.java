@@ -119,6 +119,10 @@ public class RecipeInfoActivity extends AppCompatActivity {
                 initially_liked = true;
                 txtLikes.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked, 0, 0, 0);
             }
+
+            if(getIntent().hasExtra(Constants.PUBLIC)) {
+                btnRemove.setVisibility(View.INVISIBLE);
+            }
         }
 
 
@@ -213,7 +217,7 @@ public class RecipeInfoActivity extends AppCompatActivity {
             }
             else {
                 intent.putExtra(Constants.RECIPE_ID, recipe.getRecipeID());
-                intent.putExtra(Constants.REMOVE, true);
+                intent.putExtra(Constants.REMOVE, false);
             }
 
             setResult(RESULT_OK, intent);
