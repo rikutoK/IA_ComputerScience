@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ia_computerscience.Controller.Activity.RecipeInfoActivity;
@@ -57,18 +58,18 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
     private User user;
     private ArrayList<Recipe> entireRecipeList; //stores all recipe in the list
-    private int index;
+    private ArrayList<Recipe> recipeList; //recipe list on display
+
+    private RecViewAdapter adapter;
+    private RecyclerView recView;
+    private TextView txtEmpty;
+
+    private FirebaseFirestore firestore;
 
     private SearchView searchView;
 
     private Spinner spinner;
     private Chip chip;
-
-    private ArrayList<Recipe> recipeList; //recipe list on display
-
-    private RecViewAdapter adapter;
-
-    private FirebaseFirestore firestore;
 
     private ActivityResultLauncher<Intent> startForResult;
 
@@ -113,6 +114,11 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
         firestore = FirebaseFirestore.getInstance();
 
+        recView = view.findViewById(R.id.MyRecipe_recView);
+        txtEmpty = view.findViewById(R.id.MyRecipe_txtEmpty);
+
+        getRecipes(); //gets reciep, set up rec view, set up spinner
+
         searchView = view.findViewById(R.id.MyRecipe_searchView);
         searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -123,13 +129,10 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterList(newText);
+                search(newText);
                 return false;
             }
         });
-
-        getRecipes(); //gets reciep, set up rec view, set up spinner
-
 
         //check if the recipe was removed in the RecipeInfoActivity
         startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -193,7 +196,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         });
     }
 
-    private void filterList(String newText) {
+    private void search(String newText) {
         recipeList = new ArrayList<>();
 
         for(Recipe recipe : entireRecipeList) {
@@ -203,6 +206,15 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         }
 
         adapter.setRecipeList(recipeList);
+
+        if(recipeList.size() == 0) {
+            txtEmpty.setVisibility(View.VISIBLE);
+            recView.setVisibility(View.INVISIBLE);
+        }
+        else {
+            txtEmpty.setVisibility(View.INVISIBLE);
+            recView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setUpSpinner() {
@@ -255,7 +267,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
     }
 
     private void getRecipes() {
-        index = 0;
+        int index = 0;
         entireRecipeList = new ArrayList<>();
         recipeList = new ArrayList<>();
 
@@ -326,10 +338,18 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
     }
 
     private void setUpRecView() {
-        RecyclerView recView = getView().findViewById(R.id.MyRecipe_recView);
         adapter = new RecViewAdapter(getContext(), recipeList, this);
         recView.setAdapter(adapter);
         recView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if(recipeList.size() == 0) {
+            txtEmpty.setVisibility(View.VISIBLE);
+            recView.setVisibility(View.INVISIBLE);
+        }
+        else {
+            txtEmpty.setVisibility(View.INVISIBLE);
+            recView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

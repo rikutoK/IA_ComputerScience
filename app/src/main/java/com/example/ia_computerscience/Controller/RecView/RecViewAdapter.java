@@ -34,6 +34,7 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
 
     private Map<String, Bitmap> images;
 
+
     public RecViewAdapter(Context context, ArrayList<Recipe> recipeList, OnViewClickListner onViewClickListner) {
         this.context = context;
         this.recipeList = recipeList;
@@ -71,12 +72,14 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
             holder.imageView.setImageBitmap(images.get(recipeList.get(position).getImageID()));
         }
         else { //get image from storage
+            String imageID = recipeList.get(position).getImageID();
+
             storageReference = FirebaseStorage.getInstance().getReference(Constants.IMAGE_PATH + recipeList.get(position).getImageID());
             storageReference.getBytes(FIVE_MEGABYTE)
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
                             Bitmap bitmap = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
-                            images.put(recipeList.get(position).getImageID(), bitmap);
+                            images.put(imageID, bitmap);
                             holder.imageView.setImageBitmap(bitmap);
                         }
                         else {
@@ -84,9 +87,6 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
                         }
                     });
         }
-
-
-
     }
 
     @Override
@@ -98,6 +98,8 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         this.recipeList = recipeList;
         notifyDataSetChanged();
     }
+
+
 
     public interface OnViewClickListner {
         void onViewClick(int position);

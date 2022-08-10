@@ -14,6 +14,7 @@ public abstract class Recipe implements Serializable {
     protected int calories;
     protected String time;
     protected List<FoodType> foodType;
+    protected boolean public_;
 
     public Recipe() {
         name = null;
@@ -71,20 +72,12 @@ public abstract class Recipe implements Serializable {
         this.ingredients = ingredients;
     }
 
-    public void addIngredient(String ingredient) {
-        ingredients.add(ingredient);
-    }
-
     public List<String> getSteps() {
         return steps;
     }
 
     public void setSteps(List<String> steps) {
         this.steps = steps;
-    }
-
-    public void addStep(String step) {
-        steps.add(step);
     }
 
     public int getCalories() {
@@ -111,8 +104,12 @@ public abstract class Recipe implements Serializable {
         this.foodType = foodType;
     }
 
-    public void addFoodType(FoodType type) {
-        foodType.add(type);
+    public boolean isPublic_() {
+        return public_;
+    }
+
+    public void setPublic_(boolean public_) {
+        this.public_ = public_;
     }
 
 

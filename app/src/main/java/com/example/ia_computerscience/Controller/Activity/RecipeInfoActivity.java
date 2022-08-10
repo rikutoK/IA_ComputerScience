@@ -110,8 +110,6 @@ public class RecipeInfoActivity extends AppCompatActivity {
             linearLayout.removeView(txtLikes);
         }
         else {
-            linearLayout.removeView(btnRemove);
-
             txtLikes.setText(((Public_Recipe)recipe).getLikes() + "");
 
             liked = false;
