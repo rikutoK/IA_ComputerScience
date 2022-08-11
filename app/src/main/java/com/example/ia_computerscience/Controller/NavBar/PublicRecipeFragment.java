@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,12 +28,14 @@ import android.widget.Toast;
 
 import com.example.ia_computerscience.Controller.Activity.RecipeInfoActivity;
 import com.example.ia_computerscience.Controller.RecView.RecViewAdapter;
+import com.example.ia_computerscience.Model.FoodType;
 import com.example.ia_computerscience.Model.Public_Recipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,6 +45,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,7 +79,10 @@ public class PublicRecipeFragment extends Fragment implements RecViewAdapter.OnV
     private final int LIMIT = 3;
     private boolean pageEnd;
 
-    boolean loading;
+    private boolean loading;
+
+    private ChipGroup chipGroup;
+    private Chip[] chips;
 
     private ActivityResultLauncher<Intent> startForResult;
 
@@ -141,6 +148,8 @@ public class PublicRecipeFragment extends Fragment implements RecViewAdapter.OnV
             }
         });
 
+        setUpChipGroup();
+
         startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -173,7 +182,6 @@ public class PublicRecipeFragment extends Fragment implements RecViewAdapter.OnV
         }
 
         loading = true;
-
         query.limit(LIMIT).get().addOnCompleteListener(getActivity(), task -> {
                 loading = false;
 
@@ -277,7 +285,51 @@ public class PublicRecipeFragment extends Fragment implements RecViewAdapter.OnV
         });
 
         chip = getView().findViewById(R.id.PublicRecipe_chip);
-        chip.setOnClickListener(v -> getRecipe(getFilter(), true));
+        chip.setOnClickListener(v -> {
+            getRecipe(getFilter(), true);
+
+            if(chip.isChecked()) {
+                chip.setChipIconResource(R.drawable.ic_up);
+            }
+            else {
+                chip.setChipIconResource(R.drawable.ic_down);
+            }
+        });
+    }
+
+    private void setUpChipGroup() {
+        chipGroup = getView().findViewById(R.id.PublicRecipe_chipGroup);
+        FoodType[] f = FoodType.values();
+        chips = new Chip[f.length];
+
+        for(int i = 0; i < f.length; i++) {
+            Chip chip = new Chip(getContext());
+            chip.setText(f[i].getValue());
+            chip.setTextSize(16);
+            chip.setCheckable(true);
+            chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+
+            chip.setOnClickListener(view -> {
+                getRecipe(getFilter(), true);
+
+                if(chip.isChecked()) {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.purple_200)));
+                    chip.setTextColor(getResources().getColor(R.color.white));
+                }
+                else {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                    chip.setTextColor(getResources().getColor(R.color.black));
+                }
+            });
+
+            chip.setOnCheckedChangeListener((compoundButton, b) -> {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                chip.setTextColor(getResources().getColor(R.color.black));
+            });
+
+            chipGroup.addView(chip);
+            chips[i] = chip;
+        }
     }
 
     private Query getFilter() {
@@ -297,6 +349,18 @@ public class PublicRecipeFragment extends Fragment implements RecViewAdapter.OnV
             }
             else {
                 query = firestore.collection(Constants.RECIPE).whereEqualTo(Constants.PUBLIC, true).orderBy(key.get(selectedRole), Query.Direction.ASCENDING);
+            }
+        }
+
+        return filterFoodType(query);
+    }
+
+    private Query filterFoodType(Query query) {
+        FoodType[] f = FoodType.values();
+
+        for(int i = 0; i < chips.length; i++) {
+            if(chips[i].isChecked()) {
+                query = query.whereArrayContains(Constants.FOODTYPE, f[i]);
             }
         }
 

@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.ia_computerscience.Controller.Activity.RecipeInfoActivity;
 import com.example.ia_computerscience.Controller.RecView.RecViewAdapter;
+import com.example.ia_computerscience.Model.FoodType;
 import com.example.ia_computerscience.Model.Private_Recipe;
 import com.example.ia_computerscience.Model.Public_Recipe;
 import com.example.ia_computerscience.Model.Recipe;
@@ -35,6 +36,7 @@ import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -70,6 +72,10 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
     private Spinner spinner;
     private Chip chip;
+    private String selectedRole;
+
+    private ChipGroup chipGroup;
+    private Chip[] chips;
 
     private ActivityResultLauncher<Intent> startForResult;
 
@@ -133,6 +139,8 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                 return false;
             }
         });
+
+        setUpChipGroup();
 
         //check if the recipe was removed in the RecipeInfoActivity
         startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -205,6 +213,16 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
             }
         }
 
+        for(int i = recipeList.size() - 1; i >= 0; i--) {
+            for (FoodType f : getSelectedFoodType()) {
+                if(!recipeList.get(i).getFoodType().contains(f)) {
+                    recipeList.remove(i);
+                }
+            }
+        }
+
+        sort();
+
         adapter.setRecipeList(recipeList);
 
         if(recipeList.size() == 0) {
@@ -228,20 +246,8 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch(adapterView.getItemAtPosition(i).toString()) {
-                    case "Name":
-                        Collections.sort(recipeList, Recipe :: compareNameTo);
-                        adapter.setRecipeList(recipeList);
-                        break;
-                    case "Cal":
-                        Collections.sort(recipeList, Recipe :: compareCalTo);
-                        adapter.setRecipeList(recipeList);
-                        break;
-                    case "Time":
-                        Collections.sort(recipeList, Recipe :: compareTimeTo);
-                        adapter.setRecipeList(recipeList);
-                        break;
-                }
+                selectedRole = adapterView.getItemAtPosition(i).toString();
+                sort();
             }
 
             @Override
@@ -264,6 +270,27 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                 chip.setChipIconResource(R.drawable.ic_down);
             }
         });
+    }
+
+    private void sort() {
+        switch(selectedRole) {
+            case "Name":
+                Collections.sort(recipeList, Recipe :: compareNameTo);
+                adapter.setRecipeList(recipeList);
+                break;
+            case "Cal":
+                Collections.sort(recipeList, Recipe :: compareCalTo);
+                adapter.setRecipeList(recipeList);
+                break;
+            case "Time":
+                Collections.sort(recipeList, Recipe :: compareTimeTo);
+                adapter.setRecipeList(recipeList);
+                break;
+        }
+
+        if(chip.isChecked()) {
+            Collections.reverse(recipeList);
+        }
     }
 
     private void getRecipes() {
@@ -325,7 +352,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
                            entireRecipeList.add(recipe);
                        }
-                       recipeList = entireRecipeList;
+                       recipeList = (ArrayList<Recipe>) entireRecipeList.clone();
 
                        setUpRecView(); //sets up recyclerview
 
@@ -350,6 +377,58 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
             txtEmpty.setVisibility(View.INVISIBLE);
             recView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setUpChipGroup() {
+        chipGroup = getView().findViewById(R.id.MyRecipe_chipGroup);
+        FoodType[] f = FoodType.values();
+        chips = new Chip[f.length];
+
+        for(int i = 0; i < f.length; i++) {
+            Chip chip = new Chip(getContext());
+            chip.setText(f[i].getValue());
+            chip.setTextSize(16);
+            chip.setCheckable(true);
+            chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+
+            FoodType foodType = f[i];
+
+            chip.setOnClickListener(view -> {
+                if(chip.isChecked()) {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.purple_200)));
+                    chip.setTextColor(getResources().getColor(R.color.white));
+
+                    for(int j = recipeList.size() - 1; j >= 0; j--) {
+                        if(!recipeList.get(j).getFoodType().contains(foodType)) {
+                            recipeList.remove(j);
+                        }
+                    }
+                    adapter.setRecipeList(recipeList);
+                }
+                else {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                    chip.setTextColor(getResources().getColor(R.color.black));
+
+                    search(String.valueOf(searchView.getQuery()));
+                }
+            });
+
+            chipGroup.addView(chip);
+            chips[i] = chip;
+        }
+    }
+
+    private List<FoodType> getSelectedFoodType() {
+        List<FoodType> foodType = new ArrayList<>();
+        FoodType[] f = FoodType.values();
+
+        for(int i = 0; i < chips.length; i++) {
+            if(chips[i].isChecked()) {
+                foodType.add(f[i]);
+            }
+        }
+
+        return foodType;
     }
 
     @Override
