@@ -28,14 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
+
+        if(mUser != null) {
+            getUser();
+        }
     }
 
     public void login(View view) {
-        if(mUser != null) {
-            getUser();
-            return;
-        }
-
         startActivity(new Intent(this, LoginActivity.class));
     }
 

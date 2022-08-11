@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.ia_computerscience.Controller.NavBar.AccountFragment;
 import com.example.ia_computerscience.Controller.NavBar.AddRecipeFragment;
 import com.example.ia_computerscience.Controller.NavBar.MyRecipeFragment;
 import com.example.ia_computerscience.Controller.NavBar.PublicRecipeFragment;
@@ -21,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
     private MyRecipeFragment myRecipeFragment;
     private AddRecipeFragment addRecipeFragment;
     private PublicRecipeFragment publicRecipeFragment;
+    private AccountFragment accountFragment;
 
     private User user;
 
@@ -35,11 +37,13 @@ public class HomeActivity extends AppCompatActivity {
             myRecipeFragment = MyRecipeFragment.newInstance(user);
             addRecipeFragment = AddRecipeFragment.newInstance(user);
             publicRecipeFragment = PublicRecipeFragment.newInstance(user);
+            accountFragment = AccountFragment.newInstance(user);
         }
         else {
             myRecipeFragment = new MyRecipeFragment();
             addRecipeFragment = new AddRecipeFragment();
             publicRecipeFragment = new PublicRecipeFragment();
+            accountFragment = new AccountFragment();
         }
 
 
@@ -56,6 +60,9 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
                 case R.id.PublicRecipe:
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, publicRecipeFragment).commit();
+                    return true;
+                case R.id.Account:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, accountFragment).commit();
                     return true;
                 default:
                     return false;

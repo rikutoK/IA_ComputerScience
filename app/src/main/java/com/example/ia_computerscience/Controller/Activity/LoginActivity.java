@@ -36,9 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
         txtEmail = findViewById(R.id.Login_txtEmail);
         txtPassword = findViewById(R.id.Login_txtPassword);
-
-        txtEmail.setText("rikuto_kimura@fis.edu");
-        txtPassword.setText("123456");
     }
     
     public void login(View view) {

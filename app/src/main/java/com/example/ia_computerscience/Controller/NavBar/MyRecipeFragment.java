@@ -221,10 +221,6 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
             }
         }
 
-        sort();
-
-        adapter.setRecipeList(recipeList);
-
         if(recipeList.size() == 0) {
             txtEmpty.setVisibility(View.VISIBLE);
             recView.setVisibility(View.INVISIBLE);
@@ -232,7 +228,13 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         else {
             txtEmpty.setVisibility(View.INVISIBLE);
             recView.setVisibility(View.VISIBLE);
+
+            sort();
+
+            adapter.setRecipeList(recipeList);
         }
+
+
     }
 
     private void setUpSpinner() {
@@ -299,6 +301,8 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         recipeList = new ArrayList<>();
 
         if(user.getRecipeIDs().size() == 0) {
+            setUpSpinner();
+            setUpRecView();
             return;
         }
 
