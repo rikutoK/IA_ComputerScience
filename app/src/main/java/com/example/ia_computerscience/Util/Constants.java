@@ -18,4 +18,6 @@ public class Constants {
 
     final public static String IMAGE_PATH = "images/";
 
+    final public static String DOMAIN_PREFIX = "https://eatsappia.page.link";
+    final public static String LINK = "https://example.com/?recipeID=";
 }

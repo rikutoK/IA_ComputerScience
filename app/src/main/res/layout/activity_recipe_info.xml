@@ -82,6 +82,7 @@
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/ic_share"
                     android:drawablePadding="5dp"
+                    android:onClick="share"
                     android:text="Share" />
             </LinearLayout>
 
