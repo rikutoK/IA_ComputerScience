@@ -99,6 +99,11 @@ public class LoginActivity extends AppCompatActivity {
     private void goTOHomeActivity(User user) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(Constants.USER, user);
+
+        if(getIntent().hasExtra(Constants.RECIPE_ID)) {
+            intent.putExtra(Constants.RECIPE_ID, getIntent().getStringExtra(Constants.RECIPE_ID));
+        }
+
         startActivity(intent);
     }
 }

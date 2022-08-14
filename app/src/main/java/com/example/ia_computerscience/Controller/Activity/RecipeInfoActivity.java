@@ -73,15 +73,24 @@ public class RecipeInfoActivity extends AppCompatActivity {
 
         if(!getIntent().hasExtra(Constants.RECIPE)) {
             Toast.makeText(this, "Error: Could not get recipe", Toast.LENGTH_LONG).show();
-            return;
+            finish();
         }
         if(!getIntent().hasExtra(Constants.USER)) {
             Toast.makeText(this, "Error: Could not get user", Toast.LENGTH_LONG).show();
-            return;
+            finish();
         }
 
         recipe = (Recipe) getIntent().getSerializableExtra(Constants.RECIPE);
         user = (User) getIntent().getSerializableExtra(Constants.USER);
+
+        if(recipe == null) {
+            Toast.makeText(this, "Error: Could not get recipe", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        if(user == null) {
+            Toast.makeText(this, "Error: Could not get recipe", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         getImage();
 
@@ -125,6 +134,14 @@ public class RecipeInfoActivity extends AppCompatActivity {
             }
         }
 
+        if(getIntent().hasExtra(Constants.SHARE)) {
+            btnRemove.setText("Add");
+            btnRemove.setOnClickListener(v -> addRecipe());
+
+            if(user.getRecipeIDs().contains(recipe.getRecipeID())) {
+                btnRemove.setEnabled(false);
+            }
+        }
 
         txtCal.setText(recipe.getCalories() + "kcl");
         txtTime.setText(recipe.getTime());
@@ -182,7 +199,16 @@ public class RecipeInfoActivity extends AppCompatActivity {
         finish();
     }
 
+    public void addRecipe() {
+        intent = new Intent();
+        intent.putExtra(Constants.RECIPE_ID, recipe.getRecipeID());
+        intent.putExtra(Constants.REMOVE, false);
+        setResult(RESULT_OK, intent);
 
+        Toast.makeText(this, "Recipe added successfully", Toast.LENGTH_SHORT).show();
+
+        finish();
+    }
 
     public void like(View veiw) {
         int likes = Integer.parseInt(txtLikes.getText().toString());

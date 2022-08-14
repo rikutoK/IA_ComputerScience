@@ -59,9 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
                         mUser = mAuth.getCurrentUser();
                         addUser(); //adding the newly created user to database
 
-                        Intent intent = new Intent(this, HomeActivity.class);
-                        intent.putExtra(Constants.USER, user);
-                        startActivity(intent);
+                        goTOHomeActivity();
                     }
                     else {
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -118,5 +116,16 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Error adding user to database", Toast.LENGTH_LONG).show();
             Log.w(TAG, "Error adding user to database", e);
         }
+    }
+
+    private void goTOHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(Constants.USER, user);
+
+        if(getIntent().hasExtra(Constants.RECIPE_ID)) {
+            intent.putExtra(Constants.RECIPE_ID, getIntent().getStringExtra(Constants.RECIPE_ID));
+        }
+
+        startActivity(intent);
     }
 }

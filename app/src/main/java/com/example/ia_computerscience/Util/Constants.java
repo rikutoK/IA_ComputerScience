@@ -14,6 +14,7 @@ public class Constants {
     final public static String FOODTYPE = "foodType";
 
     final public static String REMOVE = "remove";
+    final public static String SHARE = "share";
 
     final public static String IMAGE_PATH = "images/";
 

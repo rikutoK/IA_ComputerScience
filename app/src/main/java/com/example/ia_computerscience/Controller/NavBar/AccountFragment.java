@@ -79,12 +79,13 @@ public class AccountFragment extends Fragment {
         txtEmail = view.findViewById(R.id.Account_txtEmail);
         btnLogOut = view.findViewById(R.id.Account_btnLogOut);
 
-        txtName.setText("User Name: " + user.getName());
-        txtEmail.setText("Email: " + user.getEmail());
+        txtName.setText("User Name \n" + user.getName());
+        txtEmail.setText("Email \n" + user.getEmail());
 
         btnLogOut.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getContext(), MainActivity.class));
             getActivity().finish();
         });
     }

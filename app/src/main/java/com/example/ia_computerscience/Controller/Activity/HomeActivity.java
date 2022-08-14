@@ -2,8 +2,10 @@ package com.example.ia_computerscience.Controller.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.ia_computerscience.Controller.NavBar.AccountFragment;
 import com.example.ia_computerscience.Controller.NavBar.AddRecipeFragment;
@@ -13,6 +15,7 @@ import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
@@ -34,7 +37,14 @@ public class HomeActivity extends AppCompatActivity {
         if(getIntent().hasExtra(Constants.USER)) {
             user = (User) getIntent().getSerializableExtra(Constants.USER);
 
-            myRecipeFragment = MyRecipeFragment.newInstance(user);
+            if(getIntent().hasExtra(Constants.RECIPE_ID)) {
+                String recipeID = (String) getIntent().getStringExtra(Constants.RECIPE_ID);
+                myRecipeFragment = MyRecipeFragment.newInstance(user, recipeID);
+            }
+            else {
+                myRecipeFragment = MyRecipeFragment.newInstance(user);
+            }
+
             addRecipeFragment = AddRecipeFragment.newInstance(user);
             publicRecipeFragment = PublicRecipeFragment.newInstance(user);
             accountFragment = AccountFragment.newInstance(user);

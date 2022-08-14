@@ -57,6 +57,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     private User user;
     private ArrayList<Recipe> entireRecipeList; //stores all recipe in the list
@@ -79,6 +80,8 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
 
     private ActivityResultLauncher<Intent> startForResult;
 
+    private String recipeID;
+
 
     public MyRecipeFragment() {
         // Required empty public constructor
@@ -99,11 +102,29 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         return fragment;
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param user Parameter 1.
+     * @param recipeID Parameter 2.
+     * @return A new instance of fragment MyRecipeFragment.
+     */
+    public static MyRecipeFragment newInstance(User user, String recipeID) {
+        MyRecipeFragment fragment = new MyRecipeFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PARAM1, user);
+        args.putString(ARG_PARAM2, recipeID);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             user = (User) getArguments().getSerializable(ARG_PARAM1);
+            recipeID = (String) getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -202,6 +223,34 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                 }
             }
         });
+
+        //if app was opened with dynamic link
+        if(recipeID != null) {
+            System.out.println(recipeID);
+            firestore.collection(Constants.RECIPE).document(recipeID).get()
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful() && task.getResult() != null) {
+                            Recipe recipe;
+
+                            if(task.getResult().contains(Constants.LIKES)) {
+                                recipe = task.getResult().toObject(Public_Recipe.class);
+                            }
+                            else {
+                                recipe = task.getResult().toObject(Private_Recipe.class);
+                            }
+                            System.out.println(recipe);
+
+                            Intent intent = new Intent(getContext(), RecipeInfoActivity.class);
+                            intent.putExtra(Constants.RECIPE, recipe);
+                            intent.putExtra(Constants.USER, user);
+                            intent.putExtra(Constants.SHARE, true);
+                            startForResult.launch(intent);
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Error getting the recipe from the link", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     private void search(String newText) {
