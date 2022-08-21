@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,10 +24,10 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private FirebaseUser mUser;
 
-    private EditText txtName;
-    private EditText txtEmail;
-    private EditText txtPassword;
-    private EditText txtPassword2;
+    private TextInputLayout txtName;
+    private TextInputLayout txtEmail;
+    private TextInputLayout txtPassword;
+    private TextInputLayout txtPassword2;
 
     private User user;
 
@@ -49,8 +50,8 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
+        String email = txtEmail.getEditText().getText().toString();
+        String password = txtPassword.getEditText().getText().toString();
 
         //creating user with firebase authentication
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -70,39 +71,54 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean formValid() {
-        String name = txtName.getText().toString();
-        String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
-        String password2 = txtPassword2.getText().toString();
+        String name = txtName.getEditText().getText().toString();
+        String email = txtEmail.getEditText().getText().toString();
+        String password = txtPassword.getEditText().getText().toString();
+        String password2 = txtPassword2.getEditText().getText().toString();
 
         if(name.equals("")) {
-            Toast.makeText(this, "Name is empty", Toast.LENGTH_SHORT).show();
+            txtName.setError("Name is empty");
             return false;
         }
+        else {
+            txtName.setError(null);
+        }
+
         if(email.equals("")) {
-            Toast.makeText(this, "Email is empty", Toast.LENGTH_SHORT).show();
+            txtEmail.setError("Email is empty");
             return false;
         }
-        if(password.equals("") || password2.equals("")) {
-            Toast.makeText(this, "Password is empty", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         if(!email.contains("@")) {
-            Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+            txtEmail.setError("Invali Email");
             return false;
         }
+        else {
+            txtEmail.setError(null);
+        }
 
-        if(!password.equals(password2)) {
-            Toast.makeText(this, "Password confirmation failed", Toast.LENGTH_SHORT).show();
+        if(password.equals("")) {
+            txtPassword.setError("Password is empty");
             return false;
+        }
+        if(password2.equals("")) {
+            txtPassword2.setError("Password is empty");
+            return false;
+        }
+        if(!password.equals(password2)) {
+            txtPassword.setError("Password confirmation failed");
+            txtPassword2.setError("Password confirmation failed");
+            return false;
+        }
+        else {
+            txtPassword.setError(null);
+            txtPassword2.setError(null);
         }
 
         return true;
     }
 
     private void addUser() {
-        String name = txtName.getText().toString();
+        String name = txtName.getEditText().getText().toString();
         String uid = mUser.getUid();
         String email = mUser.getEmail();
 

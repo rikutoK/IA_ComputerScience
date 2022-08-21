@@ -28,15 +28,17 @@ public class HomeActivity extends AppCompatActivity {
     private AccountFragment accountFragment;
 
     private User user;
+    
+    private boolean link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        
         if(getIntent().hasExtra(Constants.USER)) {
             user = (User) getIntent().getSerializableExtra(Constants.USER);
-
+            Log.d(TAG, "onCreate: ");
             if(getIntent().hasExtra(Constants.RECIPE_ID)) {
                 String recipeID = (String) getIntent().getStringExtra(Constants.RECIPE_ID);
                 myRecipeFragment = MyRecipeFragment.newInstance(user, recipeID);

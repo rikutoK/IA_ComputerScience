@@ -81,7 +81,7 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
     private ActivityResultLauncher<Intent> startForResult;
 
     private String recipeID;
-
+    private boolean linkOpend = false;
 
     public MyRecipeFragment() {
         // Required empty public constructor
@@ -225,8 +225,9 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
         });
 
         //if app was opened with dynamic link
-        if(recipeID != null) {
-            System.out.println(recipeID);
+        if(recipeID != null && !linkOpend) {
+            linkOpend = true;
+
             firestore.collection(Constants.RECIPE).document(recipeID).get()
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful() && task.getResult() != null) {
@@ -238,7 +239,6 @@ public class MyRecipeFragment extends Fragment implements RecViewAdapter.OnViewC
                             else {
                                 recipe = task.getResult().toObject(Private_Recipe.class);
                             }
-                            System.out.println(recipe);
 
                             Intent intent = new Intent(getContext(), RecipeInfoActivity.class);
                             intent.putExtra(Constants.RECIPE, recipe);

@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,8 +23,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
 
-    private EditText txtEmail;
-    private EditText txtPassword;
+    private TextInputLayout txtEmail;
+    private TextInputLayout txtPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        txtEmail = findViewById(R.id.Login_txtEmail);
+        txtEmail = findViewById(R.id.Login_txtName);
         txtPassword = findViewById(R.id.Login_txtPassword);
     }
     
@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
+        String email = txtEmail.getEditText().getText().toString();
+        String password = txtPassword.getEditText().getText().toString();
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
@@ -59,21 +59,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean formValid() {
-        String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
+        String email = txtEmail.getEditText().getText().toString();
+        String password = txtPassword.getEditText().getText().toString();
 
         if(email.equals("")) {
-            Toast.makeText(this, "Email is empty", Toast.LENGTH_SHORT).show();
+            txtEmail.setError("Email is empty");
             return false;
         }
-        if(password.equals("")) {
-            Toast.makeText(this, "Password is empty", Toast.LENGTH_SHORT).show();
+        else if(!email.contains("@")) {
+            txtEmail.setError("Invalid Email");
             return false;
+        }
+        else {
+            txtEmail.setError(null);
         }
 
-        if(!email.contains("@")) {
-            Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+        if(password.equals("")) {
+            txtPassword.setError("Password is empty");
             return false;
+        }
+        else {
+            txtPassword.setError(null);
         }
 
         return true;
