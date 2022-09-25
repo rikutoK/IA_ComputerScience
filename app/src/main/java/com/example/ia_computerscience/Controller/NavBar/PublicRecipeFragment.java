@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,7 +28,7 @@ import android.widget.Toast;
 import com.example.ia_computerscience.Controller.Activity.RecipeInfoActivity;
 import com.example.ia_computerscience.Controller.RecView.RecViewAdapter;
 import com.example.ia_computerscience.Model.FoodType;
-import com.example.ia_computerscience.Model.Public_Recipe;
+import com.example.ia_computerscience.Model.PublicRecipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
@@ -43,9 +42,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -187,7 +184,7 @@ public class PublicRecipeFragment extends Fragment implements RecViewAdapter.OnV
 
                 if(task.isSuccessful()) {
                     for(QueryDocumentSnapshot document : task.getResult()) {
-                        recipeList.add(document.toObject(Public_Recipe.class));
+                        recipeList.add(document.toObject(PublicRecipe.class));
                     }
 
                     if(task.getResult().size() < LIMIT) { //check if next page exists

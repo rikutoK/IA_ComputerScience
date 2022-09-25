@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ia_computerscience.Model.Public_Recipe;
+import com.example.ia_computerscience.Model.PublicRecipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.R;
 import com.example.ia_computerscience.Util.Constants;
@@ -59,9 +59,9 @@ public class RecViewAdapter extends RecyclerView.Adapter<RecViewAdapter.MyViewHo
         holder.txtCal.setText(recipeList.get(position).getCalories() + "kcl");
         holder.txtTime.setText(recipeList.get(position).getTime());
 
-        if(recipeList.get(position) instanceof Public_Recipe) {
+        if(recipeList.get(position) instanceof PublicRecipe) {
             holder.txtLikes.setVisibility(View.VISIBLE);
-            holder.txtLikes.setText(((Public_Recipe) recipeList.get(position)).getLikes() + "");
+            holder.txtLikes.setText(((PublicRecipe) recipeList.get(position)).getLikes() + "");
         }
         else {
             holder.txtLikes.setVisibility(View.INVISIBLE);

@@ -16,8 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ia_computerscience.Model.FoodType;
-import com.example.ia_computerscience.Model.Private_Recipe;
-import com.example.ia_computerscience.Model.Public_Recipe;
+import com.example.ia_computerscience.Model.PrivateRecipe;
+import com.example.ia_computerscience.Model.PublicRecipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
@@ -27,13 +27,9 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RecipeInfoActivity extends AppCompatActivity {
     private static final String TAG = "RecipeInfoActivity";
@@ -118,11 +114,11 @@ public class RecipeInfoActivity extends AppCompatActivity {
         txtName.setText(recipe.getName());
 
         LinearLayout linearLayout = findViewById(R.id.RecipeInfo_linearLayout);
-        if(recipe instanceof Private_Recipe) {
+        if(recipe instanceof PrivateRecipe) {
             linearLayout.removeView(txtLikes);
         }
         else {
-            txtLikes.setText(((Public_Recipe)recipe).getLikes() + "");
+            txtLikes.setText(((PublicRecipe)recipe).getLikes() + "");
 
             liked = false;
             initially_liked = false;

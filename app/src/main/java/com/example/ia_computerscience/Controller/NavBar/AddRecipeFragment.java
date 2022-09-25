@@ -9,7 +9,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +17,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ia_computerscience.Model.FoodType;
-import com.example.ia_computerscience.Model.Private_Recipe;
-import com.example.ia_computerscience.Model.Public_Recipe;
+import com.example.ia_computerscience.Model.PrivateRecipe;
+import com.example.ia_computerscience.Model.PublicRecipe;
 import com.example.ia_computerscience.Model.Recipe;
 import com.example.ia_computerscience.Model.User;
 import com.example.ia_computerscience.R;
@@ -39,7 +37,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -203,10 +200,10 @@ public class AddRecipeFragment extends Fragment {
         List<FoodType> foodType = getSelectedFoodType();
 
         if(private_public.isChecked()) {
-            newRecipe = new Public_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
+            newRecipe = new PublicRecipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
         }
         else {
-            newRecipe = new Private_Recipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
+            newRecipe = new PrivateRecipe(name, recipeID, user.getName(), imageID, ingredients, instructions, calories, time, foodType);
         }
 
         documentReference.set(newRecipe);

@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Recipe implements Serializable {
-    protected String name;
-    protected String recipeID;
-    protected String author;
-    protected String imageID;
-    protected List<String> ingredients;
-    protected List<String> steps;
-    protected int calories;
-    protected String time;
-    protected List<FoodType> foodType;
-    protected boolean public_;
+    private String name;
+    private String recipeID;
+    private String author;
+    private String imageID;
+    private List<String> ingredients;
+    private List<String> steps;
+    private int calories;
+    private String time;
+    private List<FoodType> foodType;
+    private boolean recipePublic;
 
     public Recipe() {
         name = null;
@@ -104,12 +104,8 @@ public abstract class Recipe implements Serializable {
         this.foodType = foodType;
     }
 
-    public boolean isPublic_() {
-        return public_;
-    }
-
-    public void setPublic_(boolean public_) {
-        this.public_ = public_;
+    public void setRecipePublic(boolean recipePublic) {
+        this.recipePublic = recipePublic;
     }
 
 
